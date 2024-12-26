@@ -110,15 +110,12 @@ public class OrderService {
     }
 
     @Transactional
-    public Mono<Void> deleteOrderByOrderNumber(Long orderNumber) {
-        return Mono.just(orderRepository.existsById(orderNumber))
-            .flatMap(exists -> {
-                if (!exists) {
-                    return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order not found with orderNumber: " + orderNumber));
-                }
-                orderRepository.deleteByOrderNumber(orderNumber);
-                return Mono.empty();
-            });
+    public void deleteOrderByOrderNumber(Long orderNumber) {
+        boolean exists = orderRepository.existsById(orderNumber);
+        if (!exists) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order not found with orderNumber: " + orderNumber);
+        }
+        orderRepository.deleteByOrderNumber(orderNumber);    
     }
 
     public List<LineEntity> findAllListsByOrderNumber(long orderNumber) {
@@ -126,15 +123,12 @@ public class OrderService {
     }
 
     @Transactional
-    public Mono<Void> deleteLine(Long orderId, Long lineId) {
-        return Mono.just(lineRepository.existsById(lineId))
-            .flatMap(exists -> {
-                if (!exists) {
-                    return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "line doesn't exist: " + lineId));
-                }
-                lineRepository.deleteByOrderNumberAndLineId(orderId, lineId);
-                return Mono.empty();
-            });
+    public void deleteLine(Long orderId, Long lineId) {
+        boolean exists = lineRepository.existsById(lineId);
+        if (!exists) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "line doesn't exist: " + lineId);
+        }
+        lineRepository.deleteByOrderNumberAndLineId(orderId, lineId);
     }
 
     @Transactional

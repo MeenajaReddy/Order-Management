@@ -58,12 +58,16 @@ public class OrderController {
 
     @DeleteMapping("/{orderNumber}")
     public Mono<Void> deleteOrderByOrderNumber(@PathVariable Long orderNumber) {
-        return orderService.deleteOrderByOrderNumber(orderNumber);
+        return Mono.fromRunnable(() -> {
+            orderService.deleteOrderByOrderNumber(orderNumber);
+        });
     }   
     
     @DeleteMapping("/{orderId}/lines/{lineId}")
     public Mono<Void> deleteLine(@PathVariable Long orderId, @PathVariable Long lineId) {
-        return orderService.deleteLine(orderId, lineId);
+        return Mono.fromRunnable(() -> {
+            orderService.deleteLine(orderId, lineId);
+        });
     }
 
     @PutMapping("/{orderId}/lines/{lineId}")
